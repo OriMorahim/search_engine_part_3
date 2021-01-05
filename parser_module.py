@@ -20,14 +20,11 @@ class Parse:
 
     def __init__(self):
         self.stop_words = stopwords.words('english')
-<<<<<<< HEAD
         self.documents = []
         #self.dictionary = defaultdict(set)
         #self.tweets_words_locations = defaultdict(lambda: (str, Counter()))
-=======
         self.dictionary = defaultdict(set)
         self.tweets_words_locations = dict()
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
         self.capitals_counter = Counter()
         self.words_dual_representation = []
         self.words_capital_representation = []
@@ -60,10 +57,6 @@ class Parse:
         # if stemming is necessary
         if do_stem:
             text_tokens = self.stemmer(text_tokens)
-<<<<<<< HEAD
-=======
-           # print("after stemming:", text_tokens)
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
 
         text_tokens_without_stopwords = []#[w for w in text_tokens if w.lower() not in self.stop_words]
         for w in text_tokens:
@@ -76,8 +69,6 @@ class Parse:
         print(text_tokens_without_stopwords)
         return text_tokens_without_stopwords
 
-
-<<<<<<< HEAD
     def parse_doc(self, doc_as_named_tuple: tuple, do_stem: bool = False):
         """
         This function get tweet data than send the tweet text to parsing and saves the tokens in two data struct.
@@ -105,7 +96,7 @@ class Parse:
         #         self.tweets_words_locations[tweet_id][1].update(term)
         #
         # self.tweets_words_locations[tweet_id][0] = 'benchmark' if is_benchmark else 'not_benchmark'
-=======
+
     def parse_doc(self, doc_as_named_tuple, do_stem: bool = False):
         """
         This function takes a tweet document as list and break it into different fields
@@ -126,7 +117,7 @@ class Parse:
 
         # keep tweet words locations
         self.tweets_words_locations[tweet_id] = tweet_words_locations
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
+
 
 
     def parse_batch_of_docs(self, df: pd.DataFrame):
@@ -139,10 +130,6 @@ class Parse:
             self.parse_doc(row)
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
     def parse_corpus(self, dfs: list):
         """
         :param df:
@@ -167,11 +154,7 @@ class Parse:
         print('capital councapitals_counterter as been deleted')
 
         # change words to all capital
-<<<<<<< HEAD
         for capital in self.words_capital_representation:
-=======
-        for capital in self.words_capital_representation: # list of words need to be change appearnce to capital
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
             self.dictionary[capital.upper()] = self.dictionary.pop(capital)
 
         # change words to all lower
@@ -180,13 +163,6 @@ class Parse:
 
 
     def hash_tag_tokenizer(self, word: str) -> str:
-<<<<<<< HEAD
-=======
-        string = ""
-
-        # if word == "RT":
-        #     continue
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
         string = word
         word = word[1:]
         if "_" in word:
@@ -202,13 +178,10 @@ class Parse:
 
 
     def url_tokenizer(self, w: str) -> str:
-<<<<<<< HEAD
-=======
         string = ""
         url = []
         # if len(w) < 2:
         #     continue
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
         url = (re.split(r"\W+", w))
         url_to_string = ' '.join(url)
         string = url_to_string
@@ -329,12 +302,6 @@ class Parse:
     def remove_single_chars(self, w: str) -> str:
         string = ""
         w = re.sub(r'[^a-zA-Z0-9\s&@#/.-]', '', w)
-<<<<<<< HEAD
-=======
-        # w = w.replace("!", "").replace("?", "").replace(":", "").replace("’", "").replace("…", "").replace(";", "")
-        # w = w.replace('"', '').replace("”", "").replace("'", "").replace("*", "").replace("😂", "").replace("“", "")
-        # w = w.replace("❤", "").replace("😭", "").replace(",", "")
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
         if "." in w:
             try:
                 if float(w):
@@ -349,7 +316,6 @@ class Parse:
 
     def hyphen_fixer(self, w: str) -> str:
         string = ""
-
         if "-" in w:
             # dual_string = w
             string = " ".join(w.split("-")) + " "
