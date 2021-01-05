@@ -257,7 +257,7 @@ class Parse:
 
     def remove_single_chars(self, w: str) -> str:
         string = ""
-        w = re.sub(r'[^a-zA-Z0-9\s&@#/.-]', '', w)
+        w = re.sub(r'[^a-zA-Z0-9\s&@#/._-]', '', w)
         if "." in w:
             try:
                 if float(w):
