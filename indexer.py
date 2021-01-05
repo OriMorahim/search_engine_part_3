@@ -1,10 +1,12 @@
+from collections import Counter, defaultdict
+
 # DO NOT MODIFY CLASS NAME
 class Indexer:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
-        self.inverted_idx = {}
-        self.postingDict = {}
+        self.dictionary = defaultdict(set)
+        self.indexer = defaultdict(lambda: (str, Counter()))
         self.config = config
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -16,7 +18,6 @@ class Indexer:
         :param document: a document need to be indexed.
         :return: -
         """
-
         document_dictionary = document.term_doc_dictionary
         # Go over each term in the doc
         for term in document_dictionary.keys():
@@ -32,6 +33,20 @@ class Indexer:
 
             except:
                 print('problem with the following key {}'.format(term[0]))
+
+
+    def initialize_indexer(self, documents: list):
+        """
+        :param documents:
+        :return:
+        """
+        for document in documents:
+            # add words to dictionary
+            for term in document.tweet_tokens:
+                    self.dictionary[term].add(document.tweet_id)
+                    self.indexer[document.tweet_id][1].update(term)
+
+            self.indexer[document.tweet_id][0] = 'benchmark' if document.is_benchmark else 'not_benchmark'
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
