@@ -134,10 +134,6 @@ class Parse:
 
 
     def url_tokenizer(self, w: str) -> str:
-        string = ""
-        url = []
-        # if len(w) < 2:
-        #     continue
         url = (re.split(r"\W+", w))
         url_to_string = ' '.join(url)
         string = url_to_string
