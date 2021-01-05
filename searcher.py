@@ -31,9 +31,9 @@ class Searcher:
         """
         query_as_list = self._parser.parse_sentence(query)
 
-        relevant_docs = self._relevant_docs_from_posting(query_as_list)
+        relevant_docs, terms_doc_freq = self._relevant_docs_from_posting(query_as_list)
         n_relevant = len(relevant_docs)
-        ranked_doc_ids = Ranker.rank_relevant_docs(relevant_docs)
+        ranked_doc_ids = Ranker.rank_relevant_docs(self._indexer, relevant_docs, terms_doc_freq)
         return n_relevant, ranked_doc_ids
 
     # feel free to change the signature and/or implementation of this function 
@@ -44,10 +44,12 @@ class Searcher:
         :param query_as_list: parsed query tokens
         :return: dictionary of relevant documents mapping doc_id to document frequency.
         """
-        relevant_docs = {}
+        relevant_docs = set()
+        terms_doc_freq = dict()
+
         for term in query_as_list:
-            posting_list = self._indexer.get_term_posting_list(term)
-            for doc_id, tf in posting_list:
-                df = relevant_docs.get(doc_id, 0)
-                relevant_docs[doc_id] = df + 1
-        return relevant_docs
+            related_tweets = self._indexer[term]
+            terms_doc_freq[term] = len(related_tweets)
+            relevant_docs = relevant_docs.union(related_tweets)
+
+        return relevant_docs, terms_doc_freq
