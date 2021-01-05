@@ -2,29 +2,23 @@ import re
 import time
 import pickle
 import pandas as pd
-<<<<<<< HEAD
 from typing import NamedTuple
-=======
->>>>>>> a24168a94adb123d968668ebf39fb2dc64ebddd4
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+from document import Document
 from nltk.tokenize import word_tokenize
 from collections import Counter, defaultdict
 
-class Document(NamedTuple):
-    tweet_id: str
-    is_benchmark: bool
-    tweet_tokens: list
+# class Document(NamedTuple):
+#     tweet_id: str
+#     is_benchmark: bool
+#     tweet_tokens: list
 
 class Parse:
 
     def __init__(self):
         self.stop_words = stopwords.words('english')
         self.documents = []
-        #self.dictionary = defaultdict(set)
-        #self.tweets_words_locations = defaultdict(lambda: (str, Counter()))
-        self.dictionary = defaultdict(set)
-        self.tweets_words_locations = dict()
         self.capitals_counter = Counter()
         self.words_dual_representation = []
         self.words_capital_representation = []
@@ -34,7 +28,7 @@ class Parse:
         """
         This function tokenize, remove stop words and apply lower case for every word within the text
         """
-        text_tokens = self.number_tokenizer(text)  # parse percent
+        text_tokens = self.number_tokenizer(text)
         if "percent" in text_tokens or "percentage" in text_tokens:
             text_tokens = self.percentage_tokenizer(text_tokens)  # parse numbers
 
@@ -46,13 +40,13 @@ class Parse:
                 ans = self.url_tokenizer(ans)
             elif "-" in ans or "/" in ans or "&" in ans:
                 ans = self.hyphen_fixer(ans)
-            elif "#" in ans or "_" in ans:  # parse hashtags
+            elif "#" in ans or "_" in ans:
                 ans = self.hash_tag_tokenizer(ans)
 
 
             string = string + " " + ans
 
-        text_tokens = word_tokenize(string)  # tokenization
+        text_tokens = word_tokenize(string)
 
         # if stemming is necessary
         if do_stem:
@@ -68,6 +62,7 @@ class Parse:
         self.capitals_counter.update(text_tokens_without_stopwords)
         print(text_tokens_without_stopwords)
         return text_tokens_without_stopwords
+
 
     def parse_doc(self, doc_as_named_tuple: tuple, do_stem: bool = False):
         """
@@ -89,34 +84,6 @@ class Parse:
         )
 
         self.documents.append(document)
-
-        # # add words to dict
-        # for term in tokenized_text:
-        #         self.dictionary[term].add(tweet_id)
-        #         self.tweets_words_locations[tweet_id][1].update(term)
-        #
-        # self.tweets_words_locations[tweet_id][0] = 'benchmark' if is_benchmark else 'not_benchmark'
-
-    def parse_doc(self, doc_as_named_tuple, do_stem: bool = False):
-        """
-        This function takes a tweet document as list and break it into different fields
-        :param doc_as_list: list re-preseting the tweet.
-        :return: Document object with corresponding fields.
-        """
-        tweet_id = doc_as_named_tuple.tweet_id
-        full_text = doc_as_named_tuple.full_text
-        tokenized_text = self.parse_sentence(full_text, do_stem)
-
-        # the following dict will hold the words locations for a specific tweet
-        tweet_words_locations = defaultdict(list)
-
-        # add words to dict
-        for location, term in enumerate(tokenized_text):
-                self.dictionary[term].add(tweet_id)
-                tweet_words_locations[term].append(location)
-
-        # keep tweet words locations
-        self.tweets_words_locations[tweet_id] = tweet_words_locations
 
 
 
@@ -141,9 +108,6 @@ class Parse:
             self.parse_batch_of_docs(df)
             print(f'finish parse batch {time.ctime()}')
 
-        # fetch words with capital letter
-        print('tokens seen with capital', len(self.seen_capital))
-        print('total number of tokens seen', len(self.capitals_counter))
         self.words_dual_representation = set([word for word in self.seen_capital if word.lower() in self.capitals_counter.keys()])
         self.words_capital_representation = self.seen_capital-self.words_dual_representation
 
@@ -151,15 +115,7 @@ class Parse:
         with open('words_counter.pickle', 'wb') as handle:
             pickle.dump(self.capitals_counter, handle, protocol=pickle.HIGHEST_PROTOCOL)
         del self.capitals_counter
-        print('capital councapitals_counterter as been deleted')
 
-        # change words to all capital
-        for capital in self.words_capital_representation:
-            self.dictionary[capital.upper()] = self.dictionary.pop(capital)
-
-        # change words to all lower
-        for capital in self.words_dual_representation:
-            self.dictionary[capital.lower()].union(self.dictionary.pop(capital))
 
 
     def hash_tag_tokenizer(self, word: str) -> str:
