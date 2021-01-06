@@ -22,8 +22,7 @@ class Ranker:
     #     return [d[0] for d in ranked_results]
 
     @staticmethod
-    def rank_relevant_docs(indexer: Dict[str, Tuple[str, Counter]], relevant_tweets: Set[str],
-                           terms_doc_freq: Dict[str,int], k=None):
+    def rank_relevant_docs(docs: list,terms_doc_freq: Dict[str,int],query_as_list: list, k=None):
         """
         This function provides rank for each relevant document and sorts them by their scores.
         The current score considers solely the number of terms shared by the tweet (full_text) and query.
@@ -31,6 +30,7 @@ class Ranker:
         :param relevant_docs: dictionary of documents that contains at least one term from the query.
         :return: sorted list of documents by score
         """
+
         results = {}
         N = len(indexer) * 2
         q = len(relevant_tweets)

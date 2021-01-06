@@ -93,9 +93,11 @@ class Parse:
         :return:
         """
         # parse each tweet and insert result to a document
-
+        count = 0
         for row in df.itertuples():
-                self.parse_doc(row)
+                if count < 20:
+                    self.parse_doc(row)
+                    count = count + 1
 
     def parse_corpus(self, dfs: list):
         """
