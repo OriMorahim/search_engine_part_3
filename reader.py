@@ -63,4 +63,4 @@ class ReadFile:
 #index = Indexer('')
 #indx = Indexer.initialize_indexer(index,parser.documents,parser.words_capital_representation,parser.words_dual_representation)
 #from searcher import Searcher
-#search = Searcher(parser,indx)
+#search = Searcher(parser,index)

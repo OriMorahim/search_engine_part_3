@@ -33,7 +33,8 @@ class Searcher:
 
         relevant_docs, terms_doc_freq = self._relevant_docs_from_posting(query_as_list)
         n_relevant = len(relevant_docs)
-        ranked_doc_ids = Ranker.rank_relevant_docs(self._indexer, relevant_docs, terms_doc_freq)
+        docs = [self._indexer.indexer[tweet_id][1] for tweet_id in relevant_docs]
+        ranked_doc_ids = Ranker.rank_relevant_docs(docs, terms_doc_freq,query_as_list)
         return n_relevant, ranked_doc_ids
 
     # feel free to change the signature and/or implementation of this function 
@@ -48,7 +49,7 @@ class Searcher:
         terms_doc_freq = dict()
 
         for term in query_as_list:
-            related_tweets = self._indexer[term]
+            related_tweets = self._indexer.dictionary[term]
             terms_doc_freq[term] = len(related_tweets)
             relevant_docs = relevant_docs.union(related_tweets)
 
