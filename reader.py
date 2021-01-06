@@ -26,7 +26,7 @@ class ReadFile:
         return pd.concat(dfs, axis=0)
 
 
-    def read_all(self, max_files=100):
+    def read_all(self, max_files=1):
         """
         This method used to read all parquet files from a directory of directories. The directory
         we fetch the files from is corpus_path
@@ -39,6 +39,8 @@ class ReadFile:
             for file in files:
                 temp_df = pd.read_parquet(file, columns=RELEVANT_COLUMS)
                 temp_df_no_dup = temp_df.groupby('full_text')['tweet_id'].first().reset_index()
+                #CHANGE
+                temp_df_no_dup['is_benchmark'] = False
                 dfs.append(temp_df_no_dup)
                 counter += 1
                 if counter >= max_files:
@@ -51,3 +53,14 @@ class ReadFile:
         dfs.append(benchmark_df)
 
         return dfs
+# from reader import ReadFile
+# reader = ReadFile('C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data','C:/Users/Jonathan Grinshpan/Desktop/benchmark_data_train.snappy.parquet')
+# dfs = reader.read_all()
+# from parser_module import Parse
+# parser = Parse()
+#docs = parser.parse_corpus(dfs)
+#from indexer import Indexer
+#index = Indexer('')
+#indx = Indexer.initialize_indexer(index,parser.documents,parser.words_capital_representation,parser.words_dual_representation)
+#from searcher import Searcher
+#search = Searcher(parser,indx)

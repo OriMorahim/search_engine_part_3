@@ -24,7 +24,7 @@ class Parse:
         self.words_capital_representation = []
         self.seen_capital = set()
 
-    def parse_sentence(self, text, do_stem: bool):
+    def parse_sentence(self, text, do_stem: bool = False):
         """
         This function tokenize, remove stop words and apply lower case for every word within the text
         """
@@ -60,7 +60,7 @@ class Parse:
                     self.seen_capital.add(w)
 
         self.capitals_counter.update(text_tokens_without_stopwords)
-        print(text_tokens_without_stopwords)
+
         return text_tokens_without_stopwords
 
 
@@ -93,9 +93,9 @@ class Parse:
         :return:
         """
         # parse each tweet and insert result to a document
-        for row in df.itertuples():
-            self.parse_doc(row)
 
+        for row in df.itertuples():
+                self.parse_doc(row)
 
     def parse_corpus(self, dfs: list):
         """
@@ -114,7 +114,8 @@ class Parse:
         # save words counter as pickle
         with open('words_counter.pickle', 'wb') as handle:
             pickle.dump(self.capitals_counter, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        del self.capitals_counter
+        #CHANGE
+        #del self.capitals_counter
 
 
 
