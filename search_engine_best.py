@@ -30,19 +30,21 @@ class SearchEngine:
             No output, just modifies the internal _indexer object.
         """
         df = pd.read_parquet(fn, engine="pyarrow")
-        doc = document.Document(
-            tweet_id: str
-            is_benchmark: bool
-            tweet_tokens: list
-        )
-           # = df.values.tolist()
 
         # Iterate over every document in the file
-        for document in documents_list:
+        for row in df.itertuples():
             # parse the document
-            parsed_document = self._parser.parse_doc(document)
+            parsed_document = self._parser.parse_doc(row.full_text)
+
+            # gen Document obj
+            doc = document.Document(
+                tweet_id = row.tweet_id,
+                is_benchmark = False,
+                tweet_tokens = parsed_document
+            )
+
             # index the document data
-            self._indexer.add_new_doc(parsed_document)
+            self._indexer.add_new_doc(doc)
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE
