@@ -7,7 +7,7 @@ class Indexer:
     # You can change the internal implementation as you see fit.
     def __init__(self, config):
         self.dictionary = defaultdict(set)
-        self.indexer = defaultdict(lambda: (str, Counter()))
+        self.indexer = defaultdict(lambda: [str, Counter()])
         self.config = config
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -41,7 +41,8 @@ class Indexer:
             # add words to dictionary
             for term in document.tweet_tokens:
                     self.dictionary[term].add(document.tweet_id)
-                    self.indexer[document.tweet_id][1].update(term)
+                    #CHANGE
+                    self.indexer[document.tweet_id][1].update({term: 1})
 
             self.indexer[document.tweet_id][0] = 'benchmark' if document.is_benchmark else 'not_benchmark'
 
