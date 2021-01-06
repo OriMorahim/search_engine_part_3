@@ -4,7 +4,7 @@ import math
 from collections import Counter
 from typing import Dict, Tuple, Set
 class Ranker:
-    def __init__(self):
+    def _init_(self):
         pass
 
     # @staticmethod
@@ -32,20 +32,24 @@ class Ranker:
         """
 
         results = {}
-        N = len(indexer) * 2
-        q = len(relevant_tweets)
-        for location, doc in indexer:
+        N = len(docs) * 2
+        q = len(query_as_list)
+        for location, doc in enumerate(docs):
             sim = 0
             cosin_sim = 0
             denominator = 0
-            max_count = max(doc, key=lambda item: item[1])[1]
+            max_word = max(doc)
+            max_count = doc[max_word]
             for term in doc:
-                word = term[0].lower()
-                tf = term[1]
-                df_ = terms_doc_freq[word]
+                word = term.lower()
+                tf = doc[term]
+                if term in query_as_list:
+                    df_ = terms_doc_freq[term]
+                else:
+                    df_ = 1
                 tf = tf / max_count
                 idf = math.log(N / df_, 2)
-                if word in relevant_tweets:
+                if word in query_as_list:
                     sim = sim + tf * idf
                 denominator = denominator + math.pow(tf * idf, 2)
             if denominator == 0:
@@ -56,20 +60,3 @@ class Ranker:
         results = sorted(results.items(), key=lambda x: x[1], reverse=True)
 
         return results
-
-# from reader import ReadFile
-# reader = ReadFile('C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data','C:/Users/Jonathan Grinshpan/Desktop/benchmark_data_train.snappy.parquet')
-# dfs = reader.read_all()
-# from parser_module import Parse
-# parser = Parse()
-# docs = parser.parse_corpus(dfs)
-# from indexer import Indexer
-# index = Indexer('')
-# indx = Indexer.initialize_indexer(index,parser.documents,parser.words_capital_representation,parser.words_dual_representation)
-#from searcher import Searcher
-#search = Searcher(parser,index.dictionary)
-#a = search.search('year')
-#from ranker import Ranker
-#rank = Ranker()
-#dict = {"a": 1, "b" :2, "c" :0}
-#a = rank.rank_relevant_docs(index,['1280940944263544834', '1280921542243659776'],dict)
