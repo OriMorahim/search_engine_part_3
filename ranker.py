@@ -35,11 +35,17 @@ class Ranker:
         N = len(docs) * 2
         q = len(query_as_list)
         for location, doc in enumerate(docs):
+
             sim = 0
+
             cosin_sim = 0
+
             denominator = 0
+
             max_word = max(doc)
+
             max_count = doc[max_word]
+
             for term in doc:
                 word = term.lower()
                 tf = doc[term]
