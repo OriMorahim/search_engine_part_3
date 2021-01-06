@@ -38,7 +38,7 @@ class ReadFile:
             files = glob.glob(f"{self.corpus_path}/{dir}/*.parquet")
             for file in files:
                 temp_df = pd.read_parquet(file, columns=RELEVANT_COLUMS)
-                temp_df_no_dup = temp_df.groupby('full_text')['tweet_id'].first().reset_index()
+                temp_df_no_dup = temp_df.groupby('full_text')[['tweet_id', 'is_benchmark']].first().reset_index()
                 dfs.append(temp_df_no_dup)
                 counter += 1
                 if counter >= max_files:
