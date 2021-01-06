@@ -29,12 +29,26 @@ class Searcher:
             a list of tweet_ids where the first element is the most relavant 
             and the last is the least relevant result.
         """
+        # parse query
         query_as_list = self._parser.parse_sentence(query)
 
-        relevant_docs, terms_doc_freq = self._relevant_docs_from_posting(query_as_list)
-        n_relevant = len(relevant_docs)
-        docs = [self._indexer.indexer[tweet_id][1] for tweet_id in relevant_docs]
-        ranked_doc_ids = Ranker.rank_relevant_docs(docs, terms_doc_freq,query_as_list)
+        # if query contain tokens after parsing, find the the docs that contains the query tokens
+        if len(query_as_list)>0:
+            query_as_list = [word.lower() for word in query_as_list] + [word.upper() for word in query_as_list]
+            relevant_docs, terms_doc_freq = self._relevant_docs_from_posting(query_as_list)
+            n_relevant = len(relevant_docs)
+            docs = [self._indexer.indexer[tweet_id][1] for tweet_id in relevant_docs]
+        else:
+            print(f'Do not found relevant docs to the query:\n{query}')
+            return
+
+        # if there are docs that contain the query tokens then rank the docs by their similarities
+        if len(docs)>0:
+            ranked_doc_ids = Ranker.rank_relevant_docs(docs, terms_doc_freq, query_as_list)
+        else:
+            print(f'Do not found relevant docs to the query:\n{query}')
+            ranked_doc_ids = set()
+
         return n_relevant, ranked_doc_ids
 
     # feel free to change the signature and/or implementation of this function 
