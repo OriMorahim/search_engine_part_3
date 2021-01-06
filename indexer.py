@@ -19,13 +19,11 @@ class Indexer:
         :param document: a document need to be indexed.
         :return: -
         """
-
         # Go over each term in the doc
         for term in document.tweet_tokens:
             try:
                 self.dictionary[term].add(document.tweet_id)
                 self.indexer[document.tweet_id][1].update(term)
-
             except:
                 print('problem with the following key {}'.format(term))
 
