@@ -4,7 +4,7 @@ import math
 from collections import Counter
 from typing import Dict, Tuple, Set
 class Ranker:
-    def __init__(self):
+    def _init_(self):
         pass
 
     # @staticmethod
@@ -34,16 +34,13 @@ class Ranker:
         results = {}
         N = len(docs) * 2
         q = len(query_as_list)
-        for location, doc in enumerate(docs):
-
+        for location, doc in docs:
             sim = 0
-
             cosin_sim = 0
-
             denominator = 0
-
             max_word = max(doc)
-
+            max_count = doc[max_word]
+            max_word = max(doc)
             max_count = doc[max_word]
 
             for term in doc:
@@ -66,20 +63,3 @@ class Ranker:
         results = sorted(results.items(), key=lambda x: x[1], reverse=True)
 
         return results
-
-# from reader import ReadFile
-# reader = ReadFile('C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data','C:/Users/Jonathan Grinshpan/Desktop/benchmark_data_train.snappy.parquet')
-# dfs = reader.read_all()
-# from parser_module import Parse
-# parser = Parse()
-# docs = parser.parse_corpus(dfs)
-# from indexer import Indexer
-# index = Indexer('')
-# indx = Indexer.initialize_indexer(index,parser.documents,parser.words_capital_representation,parser.words_dual_representation)
-#from searcher import Searcher
-#search = Searcher(parser,index.dictionary)
-#a = search.search('year')
-#from ranker import Ranker
-#rank = Ranker()
-#dict = {"a": 1, "b" :2, "c" :0}
-#a = rank.rank_relevant_docs(index,['1280940944263544834', '1280921542243659776'],dict)

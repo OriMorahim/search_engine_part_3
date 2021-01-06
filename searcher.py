@@ -37,7 +37,7 @@ class Searcher:
             query_as_list = [word.lower() for word in query_as_list] + [word.upper() for word in query_as_list]
             relevant_docs, terms_doc_freq = self._relevant_docs_from_posting(query_as_list)
             n_relevant = len(relevant_docs)
-            docs = [self._indexer.indexer[tweet_id][1] for tweet_id in relevant_docs]
+            docs = [(tweet_id, self._indexer.indexer[tweet_id][1]) for tweet_id in relevant_docs]
         else:
             print(f'Do not found relevant docs to the query:\n{query}')
             return

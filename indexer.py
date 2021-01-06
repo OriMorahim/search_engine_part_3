@@ -60,8 +60,8 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
-        with open('filename', 'rb') as f:
-            indexer = pickle.load(fn)
+        with open(fn, 'rb') as f:
+            indexer = pickle.load(f)
             self.indexer = indexer
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -72,8 +72,9 @@ class Indexer:
         Input:
               fn - file name of pickled index.
         """
+        pikl = dict(self.indexer)
         with open(fn, 'wb') as f:
-            pickle.dump(self.indexer, f)
+            pickle.dump(pikl, f)
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.

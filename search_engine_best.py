@@ -4,6 +4,7 @@ from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
+import document
 import utils
 
 
@@ -29,7 +30,12 @@ class SearchEngine:
             No output, just modifies the internal _indexer object.
         """
         df = pd.read_parquet(fn, engine="pyarrow")
-        documents_list = df.values.tolist()
+        doc = document.Document(
+            tweet_id: str
+            is_benchmark: bool
+            tweet_tokens: list
+        )
+           # = df.values.tolist()
 
         # Iterate over every document in the file
         for document in documents_list:
