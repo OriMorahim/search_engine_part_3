@@ -64,3 +64,4 @@ class ReadFile:
 #indx = Indexer.initialize_indexer(index,parser.documents,parser.words_capital_representation,parser.words_dual_representation)
 #from searcher import Searcher
 #search = Searcher(parser,index)
+#a = search.search('mask')

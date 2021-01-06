@@ -32,20 +32,24 @@ class Ranker:
         """
 
         results = {}
-        N = len(indexer) * 2
-        q = len(relevant_tweets)
-        for location, doc in indexer:
+        N = len(docs) * 2
+        q = len(query_as_list)
+        for location, doc in enumerate(docs):
             sim = 0
             cosin_sim = 0
             denominator = 0
-            max_count = max(doc, key=lambda item: item[1])[1]
+            max_word = max(doc)
+            max_count = doc[max_word]
             for term in doc:
-                word = term[0].lower()
-                tf = term[1]
-                df_ = terms_doc_freq[word]
+                word = term.lower()
+                tf = doc[term]
+                if term in query_as_list:
+                    df_ = terms_doc_freq[term]
+                else:
+                    df_ = 1
                 tf = tf / max_count
                 idf = math.log(N / df_, 2)
-                if word in relevant_tweets:
+                if word in query_as_list:
                     sim = sim + tf * idf
                 denominator = denominator + math.pow(tf * idf, 2)
             if denominator == 0:
