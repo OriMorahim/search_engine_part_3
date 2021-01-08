@@ -115,9 +115,4 @@ class SearchEngine:
         return searcher.search(query)
 
 
-
-
-# from search_engine_best import SearchEngine
-# engine = SearchEngine()
-# engine.gen_search_objects()
 #126882
