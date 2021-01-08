@@ -9,10 +9,10 @@ class ConfigClass:
         # in subsequent submissions to avoid the slow downloading of the large 
         # model file with every submission.
         self._download_model = False
-        #self.corpusPath = 'C:/Users/orimo/Documents/study_bgu/information_retrival/Data'
-        self.corpusPath = 'C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data'
-        #self.benchmarkPath = 'C:/Users/orimo/Documents/study_bgu/information_retrival/benchmark_data_train.parquet'
-        self.benchmarkPath = 'C:/Users/Jonathan Grinshpan/Desktop/benchmark_data_train.snappy.parquet'
+        self.corpusPath = 'C:/Users/orimo/Documents/study_bgu/information_retrival/Data'
+        #self.corpusPath = 'C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data'
+        self.benchmarkPath = 'C:/Users/orimo/Documents/study_bgu/information_retrival/benchmark_data_train.parquet'
+        #self.benchmarkPath = 'C:/Users/Jonathan Grinshpan/Desktop/benchmark_data_train.snappy.parquet'
         self.savedFileMainFolder = ''
         self.saveFilesWithStem = self.savedFileMainFolder + "/WithStem"
         self.saveFilesWithoutStem = self.savedFileMainFolder + "/WithoutStem"

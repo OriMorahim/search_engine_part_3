@@ -45,6 +45,8 @@ class Searcher:
         # if there are docs that contain the query tokens then rank the docs by their similarities
         if len(docs) > 0:
             ranked_doc_ids = Ranker.rank_relevant_docs(docs, terms_doc_freq, query_as_list)
+            if k:
+                ranked_doc_ids = ranked_doc_ids[:k]
         else:
             print(f'No relevant docs were found for this query:\n{query}')
             ranked_doc_ids = set()
@@ -63,8 +65,10 @@ class Searcher:
         terms_doc_freq = dict()
 
         for term in query_as_list:
-            related_tweets = self._indexer.dictionary[term]
-            terms_doc_freq[term] = len(related_tweets)
-            relevant_docs = relevant_docs.union(related_tweets)
+
+            if term in self._indexer.dictionary.keys():
+                related_tweets = self._indexer.dictionary[term]
+                terms_doc_freq[term] = len(related_tweets)
+                relevant_docs = relevant_docs.union(related_tweets)
 
         return relevant_docs, terms_doc_freq

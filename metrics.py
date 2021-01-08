@@ -1,5 +1,35 @@
 import pandas as pd
 from functools import reduce
+from search_engine_best import SearchEngine
+
+queries = {
+    1: "Dr. Anthony Fauci wrote in a 2005 paper published in Virology Journal that hydroxychloroquine was effective in treating SARS",
+    2:"The seasonal flu kills more people every year in the U.S. than COVID-19 has to date",
+    4:"The coronavirus pandemic is a cover for a plan to implant trackable microchips and that the Microsoft co-founder Bill Gates is behind it",
+    7:"Herd immunity has been reached",
+    8:"Children are almost immune from this disease"
+}{}
+
+
+def get_engine_results(queries: dict, benchmark_data: pd.DataFrame, search_engine: SearchEngine):
+    """
+    This function return the search results for queries deliveried in the dict
+    :return:
+    """
+    benchmark_dict_of_dfs = {query: data for query, data in benchmark_data.groupby('query')}
+    engine_results = {}
+    for query_ind, query in queries.items():
+        n_relevant, ranked_doc_ids = search_engine.search(query)
+        temp_query_true = benchmark_dict_of_dfs[query_ind]
+        temp_query_results_df = pd.DataFrame([(query_ind, tweet_id, 1) for tweet_id, score in ranked_doc_ids],
+                                                 columns=['query', 'tweet', 'y'])
+
+        temp_query_true = temp_query_true.merge(temp_query_results_df, on=[query,tweet], how='left')
+        engine_results[query_ind] = temp_query_true
+
+    return engine_results
+
+
 
 
 # precision(df, True, 1) == 0.5
