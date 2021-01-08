@@ -23,7 +23,7 @@ class Indexer:
         for term in document.tweet_tokens:
             try:
                 self.dictionary[term].add(document.tweet_id)
-                self.indexer[document.tweet_id][1].update(term)
+                self.indexer[document.tweet_id][1].update({term: 1})
             except:
                 print('problem with the following key {}'.format(term))
 
@@ -39,7 +39,6 @@ class Indexer:
             # add words to dictionary
             for term in document.tweet_tokens:
                     self.dictionary[term].add(document.tweet_id)
-                    #CHANGE
                     self.indexer[document.tweet_id][1].update({term: 1})
 
             self.indexer[document.tweet_id][0] = 'benchmark' if document.is_benchmark else 'not_benchmark'
@@ -64,6 +63,14 @@ class Indexer:
             indexer = pickle.load(f)
             self.indexer = indexer
 
+        adjusted_indexer = defaultdict(lambda: [str, Counter])
+        for key, value in self.indexer.items():
+            adjusted_indexer[key] = value
+
+        self.indexer = adjusted_indexer
+
+
+
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def save_index(self, fn):
@@ -73,8 +80,10 @@ class Indexer:
               fn - file name of pickled index.
         """
         pikl = dict(self.indexer)
+
         with open(fn, 'wb') as f:
             pickle.dump(pikl, f)
+
 
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
@@ -92,12 +101,12 @@ class Indexer:
         """
         return self.postingDict[term] if self._is_term_exist(term) else []
 
-    def save_index_benchmark(self, fn):
+    def save_index_benchmark(self, fn:str = 'idx_bench.pickle'):
         """
         Saves a pre-computed index (or indices) so we can save our work.
         Input:
               fn - file name of pickled index.
         """
         benchmark_indexer = {key: value for key, value in self.indexer.items() if value[0] == 'benchmark'}
-        with open('idx_bench.pickle', 'wb') as f:
+        with open(fn, 'wb') as f:
             pickle.dump(benchmark_indexer, f)

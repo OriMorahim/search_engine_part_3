@@ -39,7 +39,6 @@ class ReadFile:
             for file in files:
                 temp_df = pd.read_parquet(file, columns=RELEVANT_COLUMS)
                 temp_df_no_dup = temp_df.groupby('full_text')['tweet_id'].first().reset_index()
-                #CHANGE
                 temp_df_no_dup['is_benchmark'] = False
                 dfs.append(temp_df_no_dup)
                 counter += 1
@@ -61,9 +60,11 @@ class ReadFile:
 #docs = parser.parse_corpus(dfs)
 #from indexer import Indexer
 #index = Indexer('')
-#indx = Indexer.initialize_indexer(index,parser.documents,parser.words_capital_representation,parser.words_dual_representation)
+#index.initialize_indexer(parser.documents,parser.words_capital_representation,parser.words_dual_representation)
 #from search_engine_best import SearchEngine
 #searchengine = SearchEngine()
 #from searcher import Searcher
 #search = Searcher(parser,index)
 #a = search.search('mask')
+
+#searchengine.build_index_from_parquet('C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data/date=07-22-2020/covid19_07-22.snappy.parquet')

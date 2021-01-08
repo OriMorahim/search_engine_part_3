@@ -85,6 +85,9 @@ class Parse:
 
         self.documents.append(document)
 
+        #added this return statement
+        return document
+
 
 
     def parse_batch_of_docs(self, df: pd.DataFrame):
@@ -93,6 +96,8 @@ class Parse:
         :return:
         """
         # parse each tweet and insert result to a document
+
+        ###########need to delete this after testing
         count = 0
         for row in df.itertuples():
                 if count < 20:

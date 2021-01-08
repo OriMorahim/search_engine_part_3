@@ -4,6 +4,7 @@ from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
+
 import document
 import utils
 
@@ -19,6 +20,7 @@ class SearchEngine:
         self._indexer = Indexer(config)
         self._model = None
 
+
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def build_index_from_parquet(self, fn):
@@ -30,21 +32,19 @@ class SearchEngine:
             No output, just modifies the internal _indexer object.
         """
         df = pd.read_parquet(fn, engine="pyarrow")
-
+        df['is_benchmark'] = False
         # Iterate over every document in the file
+        count = 0
         for row in df.itertuples():
+            count = count + 1
+            if count > 50:
+                break
             # parse the document
-            parsed_document = self._parser.parse_doc(row.full_text)
-
-            # gen Document obj
-            doc = document.Document(
-                tweet_id = row.tweet_id,
-                is_benchmark = False,
-                tweet_tokens = parsed_document
-            )
-
+            doc = self._parser.parse_doc(row)
             # index the document data
             self._indexer.add_new_doc(doc)
+
+
         print('Finished parsing and indexing.')
 
     # DO NOT MODIFY THIS SIGNATURE
