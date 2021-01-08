@@ -51,6 +51,7 @@ class Indexer:
         for capital in words_dual_representation:
             self.dictionary[capital.lower()].union(self.dictionary.pop(capital))
 
+
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def load_index(self, fn):
@@ -60,15 +61,15 @@ class Indexer:
             fn - file name of pickled index.
         """
         with open(fn, 'rb') as f:
-            indexer = pickle.load(f)
-            self.indexer = indexer
+            search_object = pickle.load(f)
+        self.dictionary = search_object.dictionary
+        self.indexer = search_object.indexer
 
         adjusted_indexer = defaultdict(lambda: [str, Counter])
         for key, value in self.indexer.items():
             adjusted_indexer[key] = value
 
         self.indexer = adjusted_indexer
-
 
 
     # DO NOT MODIFY THIS SIGNATURE
@@ -79,10 +80,10 @@ class Indexer:
         Input:
               fn - file name of pickled index.
         """
-        pikl = dict(self.indexer)
-
+        index_dict = dict(self.indexer)
+        search_object = {'dictionary': self.dictionary, 'indexer': index_dict}
         with open(fn, 'wb') as f:
-            pickle.dump(pikl, f)
+            pickle.dump(search_object, f)
 
 
     # feel free to change the signature and/or implementation of this function 
@@ -93,6 +94,7 @@ class Indexer:
         """
         return term in self.dictionary
 
+
     # feel free to change the signature and/or implementation of this function 
     # or drop altogether.
     def get_term_posting_list(self, term):
@@ -101,6 +103,7 @@ class Indexer:
         """
         return self.postingDict[term] if self._is_term_exist(term) else []
 
+
     def save_index_benchmark(self, fn:str = 'idx_bench.pickle'):
         """
         Saves a pre-computed index (or indices) so we can save our work.
@@ -108,5 +111,6 @@ class Indexer:
               fn - file name of pickled index.
         """
         benchmark_indexer = {key: value for key, value in self.indexer.items() if value[0] == 'benchmark'}
+        search_object = {'dictionary': self.dictionary, 'indexer': benchmark_indexer}
         with open(fn, 'wb') as f:
-            pickle.dump(benchmark_indexer, f)
+            pickle.dump(search_object, f)
