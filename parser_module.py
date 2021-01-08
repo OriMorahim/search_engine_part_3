@@ -31,13 +31,12 @@ class Parse:
         string = ""
         for w in text_tokens.split():
             ans = self.remove_single_chars(w)
-            if "http" in w or "https" in w or "www" in w:
+            if "http" in w or "www" in w:
                 ans = self.url_tokenizer(ans)
             elif "-" in ans or "/" in ans or "&" in ans:
                 ans = self.hyphen_fixer(ans)
             elif "#" in ans or "_" in ans:
                 ans = self.hash_tag_tokenizer(ans)
-
 
             string = string + " " + ans
 
@@ -246,6 +245,8 @@ class Parse:
     def remove_single_chars(self, w: str) -> str:
         string = ""
         w = re.sub(r'[^a-zA-Z0-9\s&@#/._-]', '', w)
+        if w.endswith('s') or w.endswith('S'):
+            w = w[:-1]
         if "." in w:
             try:
                 if float(w):

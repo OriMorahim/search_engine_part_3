@@ -40,26 +40,24 @@ class Ranker:
             denominator = 0
             max_word = max(doc)
             max_count = doc[max_word]
-            max_word = max(doc)
-            max_count = doc[max_word]
 
             for term in doc:
-                word = term.lower()
-                #word = term
+                word_lower = term.lower()
+                word_upper = term.upper()
                 tf = doc[term]
-                if term in query_as_list:
-                    df_ = terms_doc_freq[term]
+                if word_lower in query_as_list or word_upper in query_as_list:
+                    df_ = terms_doc_freq[word_lower]
                 else:
                     df_ = 1
                 tf = tf / max_count
                 idf = math.log(N / df_, 2)
-                if word in query_as_list:
+                if word_lower in query_as_list or word_upper in query_as_list:
                     sim = sim + tf * idf
                 denominator = denominator + math.pow(tf * idf, 2)
             if denominator == 0:
                 cosin_sim = 0
             else:
-                cosin_sim = sim / (math.sqrt(q * denominator))
+                cosin_sim = sim / (math.sqrt(denominator))
             results[location] = cosin_sim
         results = sorted(results.items(), key=lambda x: x[1], reverse=True)
 
