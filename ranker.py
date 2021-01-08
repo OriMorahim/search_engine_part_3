@@ -45,6 +45,7 @@ class Ranker:
 
             for term in doc:
                 word = term.lower()
+                #word = term
                 tf = doc[term]
                 if term in query_as_list:
                     df_ = terms_doc_freq[term]

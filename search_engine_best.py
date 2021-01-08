@@ -6,8 +6,9 @@ from indexer import Indexer
 from searcher import Searcher
 
 import document
-import utils
+#import utils
 
+config = ConfigClass()
 
 # DO NOT CHANGE THE CLASS NAME
 class SearchEngine:
@@ -20,6 +21,25 @@ class SearchEngine:
         self._indexer = Indexer(config)
         self._model = None
 
+    def gen_search_objects(self, config=config):
+        """
+
+        :param config:
+        :return:
+        """
+
+        reader = ReadFile(config.corpusPath,
+                           config.benchmarkPath
+        )
+        dfs = reader.read_all(1)
+        parser = Parse()
+        parser.parse_corpus(dfs)
+        index = Indexer(config)
+        index.initialize_indexer(parser.documents,
+                                 parser.words_capital_representation,
+                                 parser.words_dual_representation
+        )
+        self._indexer = index
 
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
@@ -33,17 +53,28 @@ class SearchEngine:
         """
         df = pd.read_parquet(fn, engine="pyarrow")
         df['is_benchmark'] = False
-        # Iterate over every document in the file
-        count = 0
+
+        # iterate over every document in the file
         for row in df.itertuples():
-            count = count + 1
-            if count > 50:
-                break
             # parse the document
             doc = self._parser.parse_doc(row)
             # index the document data
             self._indexer.add_new_doc(doc)
 
+        # find words with capital status
+        self._parser.words_dual_representation = set([word for word in self._parser.seen_capital if word.lower() in self._parser.capitals_counter.keys()])
+        self._parser.words_capital_representation = self._parser.seen_capital-self._parser.words_dual_representation
+
+        # upper for words which appeared with capital letter only
+        for capital in self._parser.words_capital_representation:
+            if capital.upper() not in self._indexer.dictionary.keys():
+                self._indexer.dictionary[capital.upper()] = self._indexer.dictionary.pop(capital)
+            else:
+                self._indexer.dictionary[capital.upper()].union(self._indexer.dictionary.pop(capital))
+
+        # lower for words which appeared with both capital and lower case letter
+        for capital in self._parser.words_dual_representation:
+            self._indexer.dictionary[capital.lower()].union(self._indexer.dictionary.pop(capital))
 
         print('Finished parsing and indexing.')
 
@@ -82,3 +113,11 @@ class SearchEngine:
         """
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query)
+
+
+
+
+# from search_engine_best import SearchEngine
+# engine = SearchEngine()
+# engine.gen_search_objects()
+#126882

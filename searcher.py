@@ -1,5 +1,5 @@
 from ranker import Ranker
-import utils
+#import utils
 
 
 # DO NOT MODIFY CLASS NAME

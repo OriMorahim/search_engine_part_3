@@ -9,11 +9,6 @@ from document import Document
 from nltk.tokenize import word_tokenize
 from collections import Counter, defaultdict
 
-# class Document(NamedTuple):
-#     tweet_id: str
-#     is_benchmark: bool
-#     tweet_tokens: list
-
 class Parse:
 
     def __init__(self):
@@ -82,7 +77,6 @@ class Parse:
             is_benchmark = is_benchmark,
             tweet_tokens = tokenized_text
         )
-
         self.documents.append(document)
 
         #added this return statement
@@ -97,12 +91,8 @@ class Parse:
         """
         # parse each tweet and insert result to a document
 
-        ###########need to delete this after testing
-        count = 0
         for row in df.itertuples():
-                if count < 20:
-                    self.parse_doc(row)
-                    count = count + 1
+            self.parse_doc(row)
 
     def parse_corpus(self, dfs: list):
         """
@@ -117,12 +107,6 @@ class Parse:
 
         self.words_dual_representation = set([word for word in self.seen_capital if word.lower() in self.capitals_counter.keys()])
         self.words_capital_representation = self.seen_capital-self.words_dual_representation
-
-        # save words counter as pickle
-        with open('words_counter.pickle', 'wb') as handle:
-            pickle.dump(self.capitals_counter, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        #CHANGE
-        #del self.capitals_counter
 
 
 

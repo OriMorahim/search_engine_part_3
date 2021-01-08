@@ -52,19 +52,3 @@ class ReadFile:
         dfs.append(benchmark_df)
 
         return dfs
-# from reader import ReadFile
-# reader = ReadFile('C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data','C:/Users/Jonathan Grinshpan/Desktop/benchmark_data_train.snappy.parquet')
-# dfs = reader.read_all()
-# from parser_module import Parse
-# parser = Parse()
-#docs = parser.parse_corpus(dfs)
-#from indexer import Indexer
-#index = Indexer('')
-#index.initialize_indexer(parser.documents,parser.words_capital_representation,parser.words_dual_representation)
-#from search_engine_best import SearchEngine
-#searchengine = SearchEngine()
-#from searcher import Searcher
-#search = Searcher(parser,index)
-#a = search.search('mask')
-
-#searchengine.build_index_from_parquet('C:/Users/Jonathan Grinshpan/Documents/information_Retrieval/Data/Data/date=07-22-2020/covid19_07-22.snappy.parquet')

@@ -60,13 +60,15 @@ class Indexer:
         Input:
             fn - file name of pickled index.
         """
+        # read the search engnine objects
         with open(fn, 'rb') as f:
             search_object = pickle.load(f)
-        self.dictionary = search_object.dictionary
-        self.indexer = search_object.indexer
+        self.dictionary = search_object['dictionary']
+        temp_indexer = search_object['indexer']
 
+        # change indexer format
         adjusted_indexer = defaultdict(lambda: [str, Counter])
-        for key, value in self.indexer.items():
+        for key, value in temp_indexer.items():
             adjusted_indexer[key] = value
 
         self.indexer = adjusted_indexer
