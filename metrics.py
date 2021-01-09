@@ -118,3 +118,4 @@ def map(df):
 
 
 
+# a= pd.read_csv('C:/Users/Jonathan Grinshpan/Desktop/year3a/information_retrieval/חלק ג/data_part_c/data/benchmark_lbls_train.csv')
