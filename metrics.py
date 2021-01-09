@@ -17,18 +17,20 @@ def get_engine_results(queries: dict, benchmark_data: pd.DataFrame, search_engin
     :return:
     """
     benchmark_data.tweet = benchmark_data.tweet.astype(object)
+    benchmark_data.tweet = benchmark_data.tweet.apply(str)
     benchmark_dict_of_dfs = {query: data for query, data in benchmark_data.groupby('query')}
-    engine_results = {}
+
+    engine_results = []
     for query_ind, query in queries.items():
         n_relevant, ranked_doc_ids = search_engine.search(query)
         temp_query_true = benchmark_dict_of_dfs[query_ind]
         temp_query_results_df = pd.DataFrame([(tweet_id, 1) for tweet_id, score in ranked_doc_ids],
-                                                 columns=['tweet', 'y'])
-        print(temp_query_results_df.dtypes)
-        temp_query_true = temp_query_true.merge(temp_query_results_df, on='tweet', how='left')
-        engine_results[query_ind] = temp_query_true
+                                                 columns=['tweet', 'pred'])
 
-    return engine_results
+        temp_query_true = temp_query_true.merge(temp_query_results_df, on='tweet', how='inner')
+        engine_results.append(temp_query_true)
+
+    return pd.concat(engine_results, axis=0)
 
 
 
