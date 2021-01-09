@@ -63,6 +63,6 @@ class Ranker:
                 results[location] = cosin_sim
             except:
                 continue
-        results = sorted(results.items(), key=lambda x: x[1], reverse=True)
+        results = sorted(results.keys(), key=lambda x: x[1], reverse=True)
 
         return results

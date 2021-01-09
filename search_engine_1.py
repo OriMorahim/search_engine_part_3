@@ -4,9 +4,6 @@ from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
-
-import document
-#import utils
 from nltk.corpus import lin_thesaurus as thes
 
 config = ConfigClass()
@@ -21,6 +18,7 @@ class SearchEngine:
         self._parser = Parse()
         self._indexer = Indexer(config)
         self._model = None
+        thes.synonyms('search_engine_1', fileid="simN.lsp")
 
     def gen_search_objects(self, config=config):
         """
@@ -114,12 +112,12 @@ class SearchEngine:
         """
 
         query = self.thesaurus(query)
-
         query = self._parser.parse_sentence(query)
         query = " ".join(query)
 
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         a = searcher.search(query, k)
+
         return a
 
 

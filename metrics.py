@@ -1,6 +1,6 @@
 import pandas as pd
 from functools import reduce
-from search_engine_best import SearchEngine
+from search_engine_2 import SearchEngine
 
 queries = {
     1: "Dr. Anthony Fauci wrote in a 2005 paper published in Virology Journal that hydroxychloroquine was effective in treating SARS",
@@ -20,19 +20,19 @@ def get_engine_results(queries: dict, benchmark_data: pd.DataFrame, search_engin
     benchmark_data.tweet = benchmark_data.tweet.apply(str)
     benchmark_dict_of_dfs = {query: data for query, data in benchmark_data.groupby('query')}
 
+    num_of_relevant = {query: df.y_true.sum() for query, df in benchmark_dict_of_dfs.items() if query in queries.keys()}
+
     engine_results = []
     for query_ind, query in queries.items():
         n_relevant, ranked_doc_ids = search_engine.search(query)
         temp_query_true = benchmark_dict_of_dfs[query_ind]
-        temp_query_results_df = pd.DataFrame([(tweet_id, 1) for tweet_id, score in ranked_doc_ids],
+        temp_query_results_df = pd.DataFrame([(tweet_id, 1) for tweet_id in ranked_doc_ids],
                                                  columns=['tweet', 'pred'])
 
         temp_query_true = temp_query_true.merge(temp_query_results_df, on='tweet', how='inner')
         engine_results.append(temp_query_true)
 
-    return pd.concat(engine_results, axis=0)
-
-
+    return pd.concat(engine_results, axis=0), num_of_relevant
 
 
 # precision(df, True, 1) == 0.5
@@ -103,8 +103,9 @@ def map(df):
     acc = 0
     split_df = [pd.DataFrame(y).reset_index() for x, y in df.groupby('query', as_index=True)]
     indices = [sdf.index[sdf['y_true'] == 1].tolist() for sdf in split_df]
+    query_ids = df['query'].unique().tolist()
     for i, indexes in enumerate(indices):
-        pres = [precision_at_n(split_df[i], i + 1, index + 1) for index in indexes]
+        pres = [precision_at_n(split_df[i], query_ids[i], index + 1) for index in indexes]
         acc += reduce(lambda a, b: a + b, pres) / len(indexes) if len(pres) > 0 else 0
 
     return acc / len(split_df)
@@ -113,8 +114,8 @@ def map(df):
 # from metrics import *
 # a=pd.read_csv('C:/Users/orimo/Downloads/benchmark_lbls_train.csv')
 # b = SearchEngine()
-# b.load_index('test.pickle')
-# c = get_engine_results(queries, a, b)
+# b.load_index('idx_bench.pkl')
+# df, num_of_relevant = get_engine_results(queries, a, b)
 
 
 
