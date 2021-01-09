@@ -97,13 +97,13 @@ class Indexer:
         return term in self.dictionary
 
 
-    # feel free to change the signature and/or implementation of this function 
-    # or drop altogether.
-    def get_term_posting_list(self, term):
-        """
-        Return the posting list from the index for a term.
-        """
-        return self.postingDict[term] if self._is_term_exist(term) else []
+    # # feel free to change the signature and/or implementation of this function
+    # # or drop altogether.
+    # def get_term_posting_list(self, term):
+    #     """
+    #     Return the posting list from the index for a term.
+    #     """
+    #     return self.postingDict[term] if self._is_term_exist(term) else []
 
 
     def save_index_benchmark(self, fn:str = 'idx_bench.pickle'):
@@ -116,3 +116,37 @@ class Indexer:
         search_object = {'dictionary': self.dictionary, 'indexer': benchmark_indexer}
         with open(fn, 'wb') as f:
             pickle.dump(search_object, f)
+
+    def gen_svd_objects(self, n_tokens: int = 500, n_ids: int = 15000):
+        """
+
+        :return:
+        """
+        dictionary = self.dictionary
+        sub_dict = list(dictionary.items())[:n_tokens]
+        doc_dummy = pd.DataFrame(None)
+
+        index = []
+        docs_while_run = set()
+        for term, docs in sub_dict:
+
+            if doc_dummy.shape[1] <= n_ids:
+
+                row = {doc_id: 1 for doc_id in docs}
+                doc_dummy = doc_dummy.append(row, ignore_index=True)
+                docs_while_run = docs_while_run.union(set(doc_dummy.columns))
+                index.append(term)
+
+            else:
+                row = {doc_id: 1 for doc_id in docs if doc_id in docs_while_run}
+
+                if len(row) > 0:
+                    doc_dummy = doc_dummy.append(row, ignore_index=True)
+                    index.append(term)
+
+        doc_dummy.index = index
+
+        doc_dummy = doc_dummy.fillna(0)
+        terms_to_rm = doc_dummy.index[doc_dummy.sum(axis=1) < 5]
+
+        return doc_dummy.drop(terms_to_rm)
