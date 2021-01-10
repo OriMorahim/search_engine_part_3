@@ -31,7 +31,7 @@ class Searcher:
         """
         # parse query
         query_as_list = self._parser.parse_sentence(query)
-        print(query_as_list)
+
         # query_as_list = query_expantion(query_as_list)
 
         # if query contain tokens after parsing, find the the docs that contains the query tokens

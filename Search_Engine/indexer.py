@@ -106,7 +106,7 @@ class Indexer:
     #     return self.postingDict[term] if self._is_term_exist(term) else []
 
 
-    def save_index_benchmark(self, fn:str = 'idx_bench.pkl'):
+    def save_index_benchmark(self, fn:str = 'idx_bench.pickle'):
         """
         Saves a pre-computed index (or indices) so we can save our work.
         Input:

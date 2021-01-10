@@ -4,11 +4,10 @@ from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
-from nltk.corpus import wordnet as wn
 
 import document
 #import utils
-
+from spellchecker import SpellChecker
 config = ConfigClass()
 
 # DO NOT CHANGE THE CLASS NAME
@@ -21,7 +20,6 @@ class SearchEngine:
         self._parser = Parse()
         self._indexer = Indexer(config)
         self._model = None
-        wn.synsets('search_engine_3')
 
     def gen_search_objects(self, config=config):
         """
@@ -29,6 +27,7 @@ class SearchEngine:
         :param config:
         :return:
         """
+
 
         reader = ReadFile(config.corpusPath,
                            config.benchmarkPath
@@ -114,33 +113,18 @@ class SearchEngine:
             and the last is the least relevant result.
         """
 
-        query = self.wordnet(query)
+
+        spell = SpellChecker()
+        # find those words that may be misspelled
+        query_as_list = list(query.split(" "))
+        misspelled = spell.unknown(query_as_list)
+
+        for word in misspelled:
+            query = query.replace(word, '')
+            query = query + " " + spell.correction(word)
+
         query = self._parser.parse_sentence(query)
         query = " ".join(query)
+
         searcher = Searcher(self._parser, self._indexer, model=self._model)
-        return searcher.search(query,k)
-
-
-
-    def wordnet(self, query: str):
-        string = query
-
-
-        synonyms = []
-        antonyms = []
-
-
-        for term in query.split(" "):
-            for syn in wn.synsets(term):
-                for l in syn.lemmas():
-                    synonyms.append(l.name())
-                    if l.antonyms():
-                        antonyms.append(l.antonyms()[0].name())
-
-        # synonyms = synonyms[:15]
-        # antonyms = antonyms[:15]
-        string = string + " " + " ".join(synonyms) + " " + " ".join(antonyms)
-        string = list(dict.fromkeys(string.split(" ")))
-        return " ".join(string)
-
-
+        return searcher.search(query, k)

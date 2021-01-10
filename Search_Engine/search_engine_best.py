@@ -4,7 +4,6 @@ from configuration import ConfigClass
 from parser_module import Parse
 from indexer import Indexer
 from searcher import Searcher
-from nltk.corpus import wordnet as wn
 
 import document
 #import utils
@@ -21,7 +20,6 @@ class SearchEngine:
         self._parser = Parse()
         self._indexer = Indexer(config)
         self._model = None
-        wn.synsets('search_engine_3')
 
     def gen_search_objects(self, config=config):
         """
@@ -95,7 +93,7 @@ class SearchEngine:
     def load_precomputed_model(self, model_dir=None):
         """
         Loads a pre-computed model (or models) so we can answer queries.
-        This is where you would load models like word2vec, LSI, LDA, etc. and
+        This is where you would load models like word2vec, LSI, LDA, etc. and 
         assign to self._model, which is passed on to the searcher at query time.
         """
         pass
@@ -103,44 +101,15 @@ class SearchEngine:
     # DO NOT MODIFY THIS SIGNATURE
     # You can change the internal implementation as you see fit.
     def search(self, query, k:int=None):
-        """
-        Executes a query over an existing index and returns the number of
+        """ 
+        Executes a query over an existing index and returns the number of 
         relevant docs and an ordered list of search results.
         Input:
             query - string.
         Output:
-            A tuple containing the number of relevant search results, and
-            a list of tweet_ids where the first element is the most relavant
+            A tuple containing the number of relevant search results, and 
+            a list of tweet_ids where the first element is the most relavant 
             and the last is the least relevant result.
         """
-
-        query = self.wordnet(query)
-        query = self._parser.parse_sentence(query)
-        query = " ".join(query)
         searcher = Searcher(self._parser, self._indexer, model=self._model)
         return searcher.search(query,k)
-
-
-
-    def wordnet(self, query: str):
-        string = query
-
-
-        synonyms = []
-        antonyms = []
-
-
-        for term in query.split(" "):
-            for syn in wn.synsets(term):
-                for l in syn.lemmas():
-                    synonyms.append(l.name())
-                    if l.antonyms():
-                        antonyms.append(l.antonyms()[0].name())
-
-        # synonyms = synonyms[:15]
-        # antonyms = antonyms[:15]
-        string = string + " " + " ".join(synonyms) + " " + " ".join(antonyms)
-        string = list(dict.fromkeys(string.split(" ")))
-        return " ".join(string)
-
-

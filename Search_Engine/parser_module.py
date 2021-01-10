@@ -12,7 +12,7 @@ from collections import Counter, defaultdict
 class Parse:
 
     def __init__(self):
-        self.stop_words = stopwords.words('english') + ['has','The']
+        self.stop_words = stopwords.words('english')
         self.documents = []
         self.capitals_counter = Counter()
         self.words_dual_representation = []
@@ -245,6 +245,8 @@ class Parse:
     def remove_single_chars(self, w: str) -> str:
         string = ""
         w = re.sub(r'[^a-zA-Z0-9\s&@#/._-]', '', w)
+        if w.endswith('s') or w.endswith('S'):
+            w = w[:-1]
         if "." in w:
             try:
                 if float(w):
